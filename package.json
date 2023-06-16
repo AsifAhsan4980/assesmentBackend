@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest",
     "build": "rimraf dist && babel src --out-dir dist  --copy-files",
-    "start": "node dist/app.js",
+    "start": "node server.js",
     "start:dev": "nodemon --exec babel-node server.js",
     "server": "nodemon --exec babel-node server.js"
   },

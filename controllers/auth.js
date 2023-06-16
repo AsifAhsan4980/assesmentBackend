@@ -9,16 +9,16 @@ let jwtToken = null;
 
 // @desc    Register user
 const register = async (req, res) => {
-    const { email } = req.body;
+    const {email} = req.body;
     console.log(req.body)
 
     let user = {};
-    user = await User.findOne({ email: email })
+    user = await User.findOne({email: email})
     console.log(user)
-    if (user) return res.status(400).send({message :'User already register!'})
+    if (user) return res.status(400).send({message: 'User already register!'})
 
     try {
-        user = new User(_.pick(req.body, [ 'email', 'password']));
+        user = new User(_.pick(req.body, ['email', 'password']));
         await user.save();
         sendToken(user, 200, res);
 
@@ -34,7 +34,7 @@ const login = async (req, res, next) => {
 
     console.log(req.body)
 
-    const { email, password } = req.body;
+    const {email, password} = req.body;
     // Check if email and password is provided
     if (!email || !password) {
         return next(new ErrorResponse("Please provide an email and password", 400));
@@ -42,10 +42,10 @@ const login = async (req, res, next) => {
 
     try {
         // Check that user exists by email
-        const user = await User.findOne({ email }).select("+password");
+        const user = await User.findOne({email}).select("+password");
 
         if (!user) {
-            res.status(401).send({message :'User not found'})
+            res.status(401).send({message: 'User not found'})
             return next(new ErrorResponse("User not found", 401));
         }
 
@@ -53,11 +53,11 @@ const login = async (req, res, next) => {
         const isMatch = await user.matchPasswords(password);
 
         if (user.disabled === true) {
-            res.status(401).send({message :'Invalid credentials'})
+            res.status(401).send({message: 'Invalid credentials'})
             return next(new ErrorResponse("User does not exist!", 401));
         }
         if (!isMatch) {
-            res.status(401).send({message :'Invalid credentials'})
+            res.status(401).send({message: 'Invalid credentials'})
             return next(new ErrorResponse("Invalid credentials", 401));
         }
         sendToken(user, 200, res);
@@ -69,9 +69,9 @@ const login = async (req, res, next) => {
 
 
 const sendToken = (user, statusCode, res) => {
-    const exp = moment().add(process.env.JWT_EXPIRE,'days').unix()
+    const exp = moment().add(process.env.JWT_EXPIRE, 'days').unix()
     const token = user.getSignedJwtToken(exp);
-    const { password, ...info } = user._doc;
+    const {password, ...info} = user._doc;
 
     const expiryDate = new Date(Number(new Date()) + 31536000000);
     console.log(info)
@@ -79,16 +79,17 @@ const sendToken = (user, statusCode, res) => {
         expires: expiryDate,
         // secure:true,
         httpOnly: true,
-    }).status(statusCode).json({ success: true, ...info, token });
+    }).status(statusCode).json({success: true, ...info, token});
 };
 
 
-
+function sum(a, b) {
+    return a + b;
+}
 
 
 export default {
     register,
     login,
-
-
+    sum
 }
