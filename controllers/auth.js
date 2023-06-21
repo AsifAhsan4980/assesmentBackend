@@ -83,13 +83,9 @@ const sendToken = (user, statusCode, res) => {
 };
 
 
-function sum(a, b) {
-    return a + b;
-}
 
 
 export default {
     register,
     login,
-    sum
 }
